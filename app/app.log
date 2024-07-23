@@ -1,0 +1,88 @@
+{"message": "Setting up initial users and customers"}
+{"message": "Processing rule: /register/customer"}
+{"message": "Processing rule: /register/user"}
+{"message": "Processing rule: /fetch/customer"}
+{"message": "Processing rule: /xxe_uploader"}
+{"message": "Processing rule: /yaml_hammer"}
+{"message": "Processing rule: /search"}
+{"message": "Processing rule: /login"}
+{"message": "Processing rule: /yaml"}
+{"message": "Processing rule: /xxe"}
+{"message": "Processing rule: /"}
+{"message": "Processing rule: /static/<path:filename>"}
+{"message": "Processing rule: /get/<cust_id>"}
+{"message": "404 error: http://localhost:5050/favicon.ico"}
+{"message": "Setting up initial users and customers"}
+{"message": "Processing rule: /register/customer"}
+{"message": "Processing rule: /register/user"}
+{"message": "Processing rule: /fetch/customer"}
+{"message": "Processing rule: /xxe_uploader"}
+{"message": "Processing rule: /yaml_hammer"}
+{"message": "Processing rule: /search"}
+{"message": "Processing rule: /login"}
+{"message": "Processing rule: /yaml"}
+{"message": "Processing rule: /xxe"}
+{"message": "Processing rule: /"}
+{"message": "Processing rule: /static/<path:filename>"}
+{"message": "Processing rule: /get/<cust_id>"}
+{"message": "Received search request"}
+{"message": "Authorization header: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzE5MTY0NzM0LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MTkxNzkxMzQsIm5iZiI6MTcxOTE2NDczNH0.BgTsO-XUAlo7GJ7wGBUMfX_XNgTv2krSXET6XlQ2od4"}
+{"message": "Token after split: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzE5MTY0NzM0LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MTkxNzkxMzQsIm5iZiI6MTcxOTE2NDczNH0.BgTsO-XUAlo7GJ7wGBUMfX_XNgTv2krSXET6XlQ2od4"}
+{"message": "Received request to register a new customer"}
+{"message": "Received username: Inno"}
+{"message": "Received password"}
+{"message": "Received first name: Inno"}
+{"message": "Received last name: Polis"}
+{"message": "Received email: john.doe@example.com"}
+{"message": "Received credit card number: 1234-5678-9012-3456"}
+{"message": "Customer Inno has been created"}
+{"message": "Setting up initial users and customers"}
+{"message": "Received login request"}
+{"message": "Received request content: {u'username': u'admin', u'password': u'admin123'}"}
+{"message": "Received username: admin"}
+{"message": "Received password"}
+{"message": "Valid user found, generating JWT token"}
+{"message": "User admin authenticated successfully"}
+{"message": "Received search request"}
+{"message": "Authorization header: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxMjM2NjcwLCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjEyNTEwNzAsIm5iZiI6MTcyMTIzNjY3MH0.GEYhfo9-CBScWTPaYAikQSWa8q9cggX8ktr7sI9Y7Rw"}
+{"message": "Token after split: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxMjM2NjcwLCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjEyNTEwNzAsIm5iZiI6MTcyMTIzNjY3MH0.GEYhfo9-CBScWTPaYAikQSWa8q9cggX8ktr7sI9Y7Rw"}
+{"message": "Received search request"}
+{"message": "Authorization header: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxMjM2NjcwLCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjEyNTEwNzAsIm5iZiI6MTcyMTIzNjY3MH0.GEYhfo9-CBScWTPaYAikQSWa8q9cggX8ktr7sI9Y7Rw"}
+{"message": "Token after split: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxMjM2NjcwLCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjEyNTEwNzAsIm5iZiI6MTcyMTIzNjY3MH0.GEYhfo9-CBScWTPaYAikQSWa8q9cggX8ktr7sI9Y7Rw"}
+{"message": "Received login request"}
+{"message": "Received request content: {u'username': u'admin', u'password': u'admin123'}"}
+{"message": "Received username: admin"}
+{"message": "Received password"}
+{"message": "Valid user found, generating JWT token"}
+{"message": "User admin authenticated successfully"}
+{"message": "Received search request"}
+{"message": "Authorization header: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxNzMwNDI3LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjE3NDQ4MjcsIm5iZiI6MTcyMTczMDQyN30.Ir4xb6bRdAWYRMumyWmPAvHMkYPzd77gruKlUfD4FIk"}
+{"message": "Token after split: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxNzMwNDI3LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjE3NDQ4MjcsIm5iZiI6MTcyMTczMDQyN30.Ir4xb6bRdAWYRMumyWmPAvHMkYPzd77gruKlUfD4FIk"}
+{"message": "Request content: {u'search': u\"admin' OR '1'='1\"}"}
+{"message": "Search term: admin' OR '1'='1"}
+{"message": "Search results: [[u'Nathan', u'Young', u'millerjessica'], [u'Kara', u'Kemp', u'martineznorma'], [u'Monica', u'Gray', u'olsoncaitlin'], [u'Elizabeth', u'Flores', u'dleon'], [u'Shaun', u'Sawyer', u'gwagner'], [u'Inno', u'Polis', u'Inno'], [u'Inno', u'Polis', u'Inno']]"}
+{"message": "Setting up initial users and customers"}
+{"message": "Received search request"}
+{"message": "Authorization header: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxNzMwNDI3LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjE3NDQ4MjcsIm5iZiI6MTcyMTczMDQyN30.Ir4xb6bRdAWYRMumyWmPAvHMkYPzd77gruKlUfD4FIk"}
+{"message": "Token after split: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3ZTQ1IiwiaWF0IjoxNzIxNzMwNDI3LCJ1c2VyIjoiYWRtaW4iLCJleHAiOjE3MjE3NDQ4MjcsIm5iZiI6MTcyMTczMDQyN30.Ir4xb6bRdAWYRMumyWmPAvHMkYPzd77gruKlUfD4FIk"}
+{"message": "Request content: {u'search': u\"admin' OR '1'='1\"}"}
+{"message": "Search term: admin' OR '1'='1"}
+{"message": "Search results: [[u'Nathan', u'Young', u'millerjessica'], [u'Kara', u'Kemp', u'martineznorma'], [u'Monica', u'Gray', u'olsoncaitlin'], [u'Elizabeth', u'Flores', u'dleon'], [u'Shaun', u'Sawyer', u'gwagner'], [u'Inno', u'Polis', u'Inno'], [u'Inno', u'Polis', u'Inno']]"}
+{"message": "Setting up initial users and customers"}
+{"message": "Processing rule: /register/customer"}
+{"message": "Processing rule: /register/user"}
+{"message": "Processing rule: /fetch/customer"}
+{"message": "Processing rule: /xxe_uploader"}
+{"message": "Processing rule: /yaml_hammer"}
+{"message": "Processing rule: /search"}
+{"message": "Processing rule: /login"}
+{"message": "Processing rule: /yaml"}
+{"message": "Processing rule: /xxe"}
+{"message": "Processing rule: /"}
+{"message": "Processing rule: /static/<path:filename>"}
+{"message": "Processing rule: /get/<cust_id>"}
+{"message": "{\"event\": \"File upload request received\"}"}
+{"message": "{\"event\": \"Saving file\", \"file_path\": \"/tmp/tmpocGxSg/46_xxe.docx\"}"}
+{"message": "{\"event\": \"File content extracted\"}"}
+{"message": "{\"event\": \"File details before deletion\", \"file_details\": {\"last_accessed\": 1721733924.8265226, \"group\": 1000, \"name\": \"xxe.docx\", \"last_modified\": 1721733924.8225224, \"created\": 1721733924.8225224, \"owner\": 1000, \"format\": \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\", \"permissions\": \"664\", \"size\": 42139}}"}
+{"message": "{\"event\": \"Temporary directory cleaned up\", \"temp_dir\": \"/tmp/tmpocGxSg/46_xxe.docx\"}"}

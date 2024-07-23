@@ -15,15 +15,15 @@ import random
 from werkzeug.utils import secure_filename
 from docx import Document
 import yaml
-
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 import os
 import base64
+import logging
+from pythonjsonlogger import jsonlogger
 
 app_port = os.environ.get('APP_PORT', 5050)
-
 
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -31,8 +31,19 @@ app.config['SECRET_KEY_HMAC'] = 'secret'
 app.config['SECRET_KEY_HMAC_2'] = 'am0r3C0mpl3xK3y'
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 app.config['STATIC_FOLDER'] = None
-
+app.debug = True
 db = SQLAlchemy(app)
+
+# Configuration for logging
+logHandler = logging.StreamHandler()
+fileHandler = logging.FileHandler('app.log')
+formatter = jsonlogger.JsonFormatter()
+
+logHandler.setFormatter(formatter)
+fileHandler.setFormatter(formatter)
+app.logger.addHandler(logHandler)
+app.logger.addHandler(fileHandler)
+app.logger.setLevel(logging.DEBUG)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,7 +73,7 @@ class Customer(db.Model):
 
 @app.before_first_request
 def setup_users():
-
+    app.logger.info("Setting up initial users and customers")
     db.create_all()
 
     if not User.query.first():
@@ -71,6 +82,8 @@ def setup_users():
         user.password = 'admin123'
         db.session.add(user)
         db.session.commit()
+	app.logger.info("Admin user created")
+
     if not Customer.query.first():
         for i in range(0,5):
             fake = Faker()
@@ -83,7 +96,7 @@ def setup_users():
             cust.ccn = fake.credit_card_number(card_type=None)
             db.session.add(cust)
             db.session.commit()
-
+	    app.logger.info("Customer %s created", cust.username)
 
 def get_exp_date():
     exp_date = datetime.datetime.utcnow() + datetime.timedelta(minutes = 240)
@@ -111,6 +124,7 @@ def insecure_verify(token):
 
 @app.errorhandler(404)
 def pnf(e):
+    app.logger.warning("404 error: %s", request.url)
     template = '''<html>
     <head>
     <title>Error</title>
@@ -134,6 +148,7 @@ def sitemap():
     links = []
     for rule in app.url_map.iter_rules():
         print(rule)
+	app.logger.info("Processing rule: %s",rule)
         if ("GET" in rule.methods or "POST" in rule.methods) and has_no_empty_params(rule):
             if not 'static' in rule.endpoint:
                 url = url_for(rule.endpoint, **(rule.defaults or {}))
@@ -145,31 +160,43 @@ def sitemap():
 @app.route('/register/user', methods = ['POST'])
 def reg_customer():
     try:
+	app.logger.debug("Received request to register a new user")
         content = request.json
         if content:
             username = content['username']
             password = content['password']
+	    app.logger.debug("Received username: %s", username)
             hash_pass = hashlib.md5(password).hexdigest()
+	    app.logger.debug("Hashed password: %s", hash_pass)
             new_user = User(username, hash_pass)
             db.session.add(new_user)
             db.session.commit()
             user_created = 'User: {0} has been created'.format(username)
+	    app.logger.info("User %s has been created", username)
             return jsonify({'Created': user_created}),200
     except Exception as e:
+	app.logger.error("Error registering user: %s", str(e))
         return jsonify({'Error': str(e.message)}),404
 
 @app.route('/register/customer', methods=['POST'])
 def reg_user():
     try:
+	app.logger.debug("Received request to register a new customer")
         content = request.json
         if content:
             username = content['username']
+	    app.logger.debug("Received username: %s", username)
             password = content['password']
+	    app.logger.debug("Received password")
             first_name = content['first_name']
+	    app.logger.debug("Received first name: %s", first_name)
             last_name = content['last_name']
+	    app.logger.debug("Received last name: %s", last_name)
             email = content['email']
+	    app.logger.debug("Received email: %s", email)
             ccn = content.get('ccn')  # ccn is nullable, so use .get() to handle None
-            new_customer = Customer(
+            app.logger.debug("Received credit card number: %s", ccn)
+	    new_customer = Customer(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -179,9 +206,11 @@ def reg_user():
             )
             db.session.add(new_customer)
             db.session.commit()
+	    app.logger.info("Customer %s has been created", username)
             user_created = 'Customer: {0} has been created'.format(username)
             return jsonify({'Created': user_created}), 200
     except Exception as e:
+	app.logger.error("Error registering customer: %s", str(e))
         return jsonify({'Error': str(e)}), 404
 
 
@@ -193,41 +222,57 @@ def login():
     This token can be used for subsequent requests.
     '''
     try:
+	app.logger.debug("Received login request")
         content = request.json
+	app.logger.debug("Received request content: %s", content)
         print(content)
         username = content['username']
+	app.logger.debug("Received username: %s", username)
         password = content['password']
+	app.logger.debug("Received password")
         auth_user = User.query.filter_by(username = username, password = password).first()
         if auth_user:
+	    app.logger.debug("Valid user found, generating JWT token")
             auth_token = jwt.encode({'user': username, 'exp': get_exp_date(), 'nbf': datetime.datetime.utcnow(), 'iss': 'we45', 'iat': datetime.datetime.utcnow()}, app.config['SECRET_KEY_HMAC'], algorithm='HS256')
             resp = Response(json.dumps({'Authenticated': True, "User": username}))
             #resp.set_cookie('SESSIONID', auth_token)
             resp.headers['Authorization'] = "{0}".format(auth_token)
             resp.status_code = 200
             resp.mimetype = 'application/json'
-            return resp
+            app.logger.info("User %s authenticated successfully", username)
+	    return resp
         else:
+	    app.logger.warning("Invalid username or password")
             return jsonify({'Error': 'No User here...'}),404
     except:
+	app.logger.error("Error in login endpoint: %s", str(e))
         return jsonify({'Error': 'Unable to recognize Input'}),404
 
 @app.route('/fetch/customer', methods=['POST'])
 def fetch_customer():
+    app.logger.debug("Received request to fetch customer details")
     token = request.headers.get('Authorization')
+    app.logger.debug("Authorization header: %s", token)
     if not token or not token.startswith('Bearer '):
+	app.logger.warning("Missing or invalid token")
         return jsonify({'Error': 'Missing or invalid token'}), 403
 
     token = token.split(' ')[1]  # Extract the token by removing 'Bearer '
+    app.logger.debug("Token after split: %s", token)
 
     if not verify_jwt(token):
+	app.logger.warning("Invalid token or token expired")
         return jsonify({'Error': 'Invalid token or token expired'}), 403
 
     # Continue with fetching the customer details
     content = request.json
+    app.logger.debug("Request content: %s", content)
     if content:
         customer_id = content['id']
+	app.logger.debug("Requested customer ID: %s", customer_id)
         customer_record = Customer.query.get(customer_id)
         if customer_record:
+	    app.logger.debug("Customer record found")
             customer_dict = {
                 'id': customer_record.id,
                 'firstname': customer_record.first_name,
@@ -236,10 +281,13 @@ def fetch_customer():
                 'cc_num': customer_record.ccn,
                 'username': customer_record.username
             }
+	    app.logger.debug("Customer details: %s", customer_dict)
             return jsonify(customer_dict), 200
         else:
+	    app.logger.warning("No customer found with the given ID")
             return jsonify({'Error': 'No Customer Found'}), 404
     else:
+	app.logger.warning("Invalid request content")
         return jsonify({'Error': 'Invalid Request'}), 400
 
 @app.route('/get/<cust_id>', methods=['GET'])
@@ -287,22 +335,27 @@ def get_customer(cust_id):
 
 @app.route('/search', methods=['POST'])
 def search_customer():
+    app.logger.debug("Received search request")
     token = request.headers.get('Authorization')
-
+    app.logger.debug("Authorization header: %s", token)
     # Check if token exists and has the correct format
     if not token or not token.startswith('Bearer '):
+	app.logger.warning("Missing or invalid token")
         return jsonify({'Error': 'Not Authenticated!'}), 403
 
     # Extract the token part
     token = token.split(' ')[1]
-
+    app.logger.debug("Token after split: %s", token)
     # Verify JWT token
     if not verify_jwt(token):
+	app.logger.warning("Invalid token")
         return jsonify({'Error': 'Invalid Token'}), 403
 
     # Process the request body
     content = request.json
+    app.logger.debug("Request content: %s", content)
     if not content or 'search' not in content:
+	app.logger.warning("Invalid request content")
         return jsonify({'Error': 'Invalid Request'}), 400
 
     # Perform the search based on the 'search' parameter
@@ -334,32 +387,55 @@ def index():
 def hello():
     if request.method == 'POST':
         try:
+	    app.logger.debug(json.dumps({"event": "File upload request received"}))
             f = request.files['file']
             if f.filename == '':
+		app.logger.warning(json.dumps({"event": "No file selected"}))
                 return "No file selected", 400
             
             # Generate a random filename to avoid clashes
             rand = str(random.randint(1, 100))
             fname = secure_filename(f.filename)
             file_path = os.path.join(tempfile.mkdtemp(), rand + '_' + fname)
-            
+            app.logger.debug(json.dumps({"event": "Saving file", "file_path": file_path}))
+
             # Save file locally
             f.save(file_path)
             
+	    
             # Access saved file
             document = Document(file_path)
             content = '\n'.join([para.text for para in document.paragraphs])
-            
-            # Clean up the temporary directory
+	    app.logger.debug(json.dumps({"event": "File content extracted"}))
+
+            # Get file details and permissions
+            file_stat = os.stat(file_path)
+            file_details = {
+                "size": file_stat.st_size,
+                "permissions": oct(file_stat.st_mode)[-3:],
+                "owner": file_stat.st_uid,
+                "group": file_stat.st_gid,
+                "last_accessed": file_stat.st_atime,
+                "last_modified": file_stat.st_mtime,
+                "created": file_stat.st_ctime,
+                "name": f.filename,
+                "format": f.content_type
+            }
+            log_event = {"event": "File details before deletion", "file_details": file_details}
+            app.logger.debug(json.dumps(log_event))
+
+	    # Clean up the temporary directory
             shutil.rmtree(os.path.dirname(file_path))
-            
+            app.logger.debug(json.dumps({"event": "Temporary directory cleaned up", "temp_dir": file_path}))
             # Render template with file content
             return render_template('view.html', name=content)
         
         except Exception as e:
+	    app.logger.error(json.dumps({"event": "Error processing file", "error": str(e)}))
             return str(e), 400
     
     return "Method not allowed", 405
+    app.logger.warning(json.dumps({"event": "Invalid method", "method": request.method}))
 
 
 @app.route("/yaml")
